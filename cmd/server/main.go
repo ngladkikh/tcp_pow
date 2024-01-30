@@ -3,42 +3,27 @@ package main
 import (
 	"fmt"
 	"log"
-	"os"
-	"strconv"
 	"tcp_pow/internal/pow"
+	"tcp_pow/pkg/config"
 	"tcp_pow/pkg/tcp"
 	"time"
 )
 
 func main() {
 	// Read environment variables
-	port := getEnv("SERVER_PORT", "9999")                                       // Default port is 9999
-	timeoutMillis, err := strconv.Atoi(getEnv("SERVER_TIMEOUT_MILLIS", "5000")) // Default timeout is 5000ms
+	cfg, err := config.NewConfig()
 	if err != nil {
-		log.Fatalf("Invalid timeout value: %v", err)
-	}
-
-	powComplexity, err := strconv.Atoi(getEnv("POW_COMPLEXITY", "3")) // Default PoW complexity is 3
-	if err != nil {
-		log.Fatalf("Invalid PoW complexity value: %v", err)
+		log.Fatalf("Error loading config: %v", err)
 	}
 
 	// Initialize the PoW validator
-	powValidator := pow.NewSha256PoW(powComplexity)
+	powValidator := pow.NewSha256PoW(cfg.PowComplexity)
 
 	// Initialize and start the TCP server
-	serverAddress := fmt.Sprintf("0.0.0.0:%s", port)
-	server := tcp.NewTCPServer(serverAddress, powValidator, time.Duration(timeoutMillis)*time.Millisecond)
-	fmt.Printf("Starting server on port %s\n", port)
+	serverAddress := fmt.Sprintf("%s:%s", cfg.ServerAddr, cfg.ServerPort)
+	server := tcp.NewTCPServer(serverAddress, powValidator, time.Duration(cfg.TimeoutMillis)*time.Millisecond)
+	fmt.Printf("Starting server %s:%s", cfg.ServerAddr, cfg.ServerPort)
 	if err := server.ListenAndServe(); err != nil {
 		log.Fatalf("Could not start server: %v", err)
 	}
-}
-
-func getEnv(key, defaultValue string) string {
-	value, exists := os.LookupEnv(key)
-	if !exists {
-		return defaultValue
-	}
-	return value
 }
