@@ -10,7 +10,6 @@ import (
 )
 
 func main() {
-	// Read environment variables
 	cfg, err := config.NewConfig()
 	if err != nil {
 		log.Fatalf("Error loading config: %v", err)
