@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  server:
+    build:
+      context: .
+      dockerfile: Dockerfile.server
+      target: runtime
+    image: tcp_pow_server:latest
+    container_name: local_tcp_pow_server
+    ports:
+      - "9999:9999"
+    environment:
+      - SERVER_PORT=9999
+      - POW_COMPLEXITY=3
+
+  client:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+      target: runtime
+    image: tcp_pow_client:latest
+    container_name: local_tcp_pow_client
+    environment:
+      - SERVER_ADDR=server
+      - SERVER_PORT=9999
+      - POW_COMPLEXITY=3
+    depends_on:
+      - server
