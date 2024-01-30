@@ -1,20 +1,17 @@
-.PHONY: build test server stop client integration
-
-build:
-	@docker build -f Dockerfile.server -t tcp_pow_server --target runtime . \
-	&& docker build -f Dockerfile.client -t tcp_pow_client --target runtime .
+.PHONY: test server client build integration
 
 test:
 	@go test -v ./...
 
 server:
-	@docker run -d --rm -p 9999:9999 -e SERVER_PORT=9999 -e POW_COMPLEXITY=3 --name local_tcp_pow_server tcp_pow_server
-
-stop:
-	@docker stop local_tcp_pow_server
+	@SERVER_ADDR=localhost SERVER_PORT=9999 ROW_COMPLEXITY=3 go run cmd/server/main.go
 
 client:
 	@SERVER_ADDR=localhost SERVER_PORT=9999 ROW_COMPLEXITY=3 go run cmd/client/main.go
+
+build:
+	@docker build -f Dockerfile.server -t tcp_pow_server --target runtime . \
+	&& docker build -f Dockerfile.client -t tcp_pow_client --target runtime .
 
 integration:
 	docker-compose up --abort-on-container-exit --exit-code-from client
