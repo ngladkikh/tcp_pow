@@ -1,0 +1,22 @@
+FROM golang:latest as builder
+
+WORKDIR /app
+
+COPY go.mod go.sum ./
+RUN go mod download
+
+COPY . .
+
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o server ./cmd/server/main.go
+
+FROM scratch as runtime
+
+COPY --from=builder /app/server /server
+
+ENV SERVER_PORT=9999 \
+    SERVER_ADDR=0.0.0.0
+
+EXPOSE 9999
+
+# Command to run the server
+CMD ["/server"]
