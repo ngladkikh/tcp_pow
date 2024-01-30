@@ -31,13 +31,32 @@ This project uses a Makefile for easy building, testing, and running of the serv
 
 The repository is structured as follows:
 
-- cmd/: Contains the main applications for the client and server.
+- __cmd/__: Contains the main applications for the client and server.
     - client/: Client application.
     - server/: Server application.
-- internal/: Internal application code.
-    - pow/: Implementation of the Proof of Work algorithm.
-    - quotes/: Management of the quotes used in the server response.
-- pkg/: Library code that could be used by external applications.
-    - tcp/: TCP communication handling.
-    - config/: Shared between sever and client configuration helpers.
-- Dockerfile.server and Dockerfile.client: Dockerfiles for building the server and client applications.
+- __internal/__: Internal application code.
+    - __pow/__: Implementation of the Proof of Work algorithm.
+    - __quotes/__: Management of the quotes used in the server response.
+- __pkg/__: Library code that could be used by external applications.
+    - __tcp/__: TCP communication handling.
+    - __config/__: Shared between sever and client configuration helpers.
+- __Dockerfile.server__ and __Dockerfile.client__: Dockerfiles for building the server and client applications.
+
+## Room for improvement
+
+The current project state is a bare minimum implementation that meets given requirements.
+There are several areas where it could be further improved or extended:
+
+**Adaptive PoW Complexity**: Implementing a system where the PoW complexity can be adjusted dynamically based on various factors (like server load, time of day, or perceived threat level) would make the system more flexible and potentially more secure.
+
+**Protocol for Complexity Negotiation**: Developing a more sophisticated communication protocol between the client and server could allow for the dynamic exchange of PoW complexity. This would let the server inform the client of the current complexity level required, enabling real-time adjustments to the PoW challenge.
+
+**Using Redis for Storing Complexity and Other Configurations**: Incorporating an external store like Redis could provide a centralized place for managing configuration settings like PoW complexity. This would facilitate easier management, especially in distributed deployments or microservices architecture.
+
+**Expanding the Communication Protocol**: Extending the protocol to support more commands would make the system more versatile. Potential commands could include administrative controls (like adjusting complexity), querying server status, or other client-server interactions that might be relevant.
+
+**Implementing Rate Limiting and Blacklisting**: To further protect against abuse and enhance security, implementing rate limiting for client requests and the ability to blacklist IPs or clients that exhibit malicious behavior could be considered.
+
+**Incorporating Different PoW Algorithms**: Offering a choice of PoW algorithms, or implementing more advanced algorithms, could be a way to cater to different use cases or security requirements.
+
+**Enhanced Monitoring and Logging**: Implementing a detailed logging and monitoring solution would aid in the observability of the system, allowing for quicker debugging, performance tuning, and understanding usage patterns.
