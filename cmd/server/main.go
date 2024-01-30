@@ -15,10 +15,8 @@ func main() {
 		log.Fatalf("Error loading config: %v", err)
 	}
 
-	// Initialize the PoW validator
 	powValidator := pow.NewSha256PoW(cfg.PowComplexity)
 
-	// Initialize and start the TCP server
 	serverAddress := fmt.Sprintf("%s:%s", cfg.ServerAddr, cfg.ServerPort)
 	server := tcp.NewTCPServer(serverAddress, powValidator, time.Duration(cfg.TimeoutMillis)*time.Millisecond)
 	fmt.Printf("Starting server %s:%s", cfg.ServerAddr, cfg.ServerPort)

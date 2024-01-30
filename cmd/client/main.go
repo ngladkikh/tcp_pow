@@ -27,7 +27,6 @@ func main() {
 
 	reader := bufio.NewReader(conn)
 
-	// Receive PoW challenge
 	challenge, err := reader.ReadString('\n')
 	if err != nil {
 		fmt.Printf("Failed to read challenge: %s\n", err)
@@ -37,14 +36,11 @@ func main() {
 
 	fmt.Printf("Received challenge: %s\n", challenge)
 
-	// Brute force to find valid nonce
 	nonce := findValidNonce(challenge, cfg.PowComplexity)
 	fmt.Printf("Found valid nonce: %s\n", nonce)
 
-	// Send nonce back to server
 	fmt.Fprintln(conn, nonce)
 
-	// Receive quote
 	quote, err := reader.ReadString('\n')
 	if err != nil {
 		fmt.Printf("Failed to read quote: %s\n", err)
