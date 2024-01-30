@@ -20,3 +20,16 @@ func TestSha256PoW_ValidateKnownPairs(t *testing.T) {
 		}
 	}
 }
+
+func TestStubValidate(t *testing.T) {
+	validNonce := "foo"
+	pow := NewStubPow(validNonce)
+
+	if !pow.Validate("baz", validNonce) {
+		t.Errorf("Expected nonce to be valid")
+	}
+
+	if pow.Validate("baz", "fiz") {
+		t.Errorf("Expected nonce invalid")
+	}
+}

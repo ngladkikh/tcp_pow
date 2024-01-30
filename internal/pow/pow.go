@@ -28,3 +28,15 @@ func calculateHash(data string, nonce string) string {
 	hash := sha256.Sum256([]byte(input))
 	return hex.EncodeToString(hash[:])
 }
+
+type StubPow struct {
+	ValidNonce string
+}
+
+func NewStubPow(validNonce string) PoW {
+	return &StubPow{ValidNonce: validNonce}
+}
+
+func (p *StubPow) Validate(_ string, nonce string) bool {
+	return nonce == p.ValidNonce
+}
